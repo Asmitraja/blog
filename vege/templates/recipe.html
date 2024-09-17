@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block start %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand black" href="/recipes">MyBloGs.com</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Features</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Pricing</a>
+      </li>
+    </ul>
+  </div>
+  <h4 class="text-right text-primary p-2"> Welcome {{request.user.first_name}} {{request.user.last_name}}</h4>
+  <button class="btn btn-outline-success"> 
+    <a href="{% url 'logout_page' %}" style="text-decoration: none; color: inherit;">Logout</a> 
+  </button>
+  
+</nav>
+
+<div class="container mt-3">
+    <form class="col-7 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2 class="p-2"> Add your Blog 🚀</h2>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Blog Title</label>
+          <input name="recipe_name" required type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Blog Description</label>
+          <textarea name="recipe_description" required class="form-control"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Blog Image</label>
+            <input name="recipe_image" type="file" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Add Blog</button>
+    </form>
+    <hr>
+    <form class="w-50 mx-auto p-3" method="get">
+      <div>
+        <label for="exampleInputEmail1" class="form-label">Search Blog</label>
+        <div class="d-flex flex-row">
+          <input name="search" type="text" class="form-control">
+          <button type="submit" class="btn btn-info m-1">Search</button>
+        </div>
+      </div>
+    </form>
+    <table class="table table-bordered mt-4" style="border-color: #000; border-width: 2px;">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Blog Title</th>
+            <th scope="col">Blog Description</th>
+            <th scope="col">Blog Image</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for recipe in recipes %}  
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{recipe.recipe_name}}</td>
+            <td>{{recipe.recipe_description}}</td>
+            <td>
+              <img src="/media/{{recipe.recipe_image}}" style="height: 130px; width: 200px;">
+            </td>
+            <td>
+              <a href="/delete_recipe/{{recipe.id}}" class="btn btn-danger btn-sm">Delete</a>
+              <a href="/update_recipe/{{recipe.id}}" class="btn btn-success btn-sm m-1">Update</a>
+            </td>
+          </tr>
+        {% endfor %}  
+        </tbody>
+      </table>
+</div>
+{% endblock %}
